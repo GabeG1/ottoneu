@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useCookies } from "react-cookie";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import './style/App.css';
@@ -6,6 +6,11 @@ import TextField from '@mui/material/TextField';
 import { Button, Paper, Stack } from '@mui/material';
 import * as yup from 'yup';
 import { Navigate } from 'react-router-dom';
+import axios from 'axios';
+import Team from './components/Team';
+
+
+axios.defaults.withCredentials = true
 
 function App() {
   const [cookies, setCookie] = useCookies(["ottoneu"]);
@@ -14,7 +19,17 @@ function App() {
     (cookies.authToken !== undefined) || false
   );
   const [authToken, setAuthToken] = useState(cookies.authToken || "");
-  const [username, setUsername] = useState(cookies.username || "");
+  const [username, setUsername] = useState("");
+
+
+  useEffect(() => {
+    // declare the async data fetching function
+
+
+    // make sure to catch any error
+
+  }, []);
+
 
   const validationSchema = yup.object({
     username: yup
@@ -51,11 +66,33 @@ function App() {
 
             onSubmit={async (values, { resetForm }) => {
 
-              //setCookie("username", values.username, { path: "/" });
-              //setCookie("authToken", values.teamName, { path: "/" });
-              console.log("here")
-              setUsername(values.username);
-              setIsLoggedIn(true);
+
+              const login = async () => {
+
+                console.log("starting")
+                const formData = new FormData();
+                console.log(process.env)
+                const userInfo = {
+                  'username': values.username,
+                  'password': values.password,
+                }
+                Object.keys(userInfo).forEach(key => formData.append(key, userInfo[key]));
+                // get the data from the api
+                const data = await axios.post(`http://localhost:5000/login`, formData, {
+                  headers: {
+                    //'content-type': 'application/x-www-form-urlencoded',
+                    // "Access-Control-Allow-Origin": "*",
+                    //"Access-Control-Allow-Headers": "Origin, X-Requested-With, Content-Type, Accept",
+                  }
+                });
+                console.log("finished")
+                setAuthToken(cookies._ga_R079V0VW20)
+                setIsLoggedIn(true);
+              };
+
+
+              // call the function
+              login().catch(console.error);
             }}
           >
             {({ isSubmitting, errors, touched, values, handleChange }) => (
