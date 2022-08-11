@@ -7,7 +7,6 @@ import { Button, Paper, Stack } from '@mui/material';
 import * as yup from 'yup';
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
-import Team from './components/Team';
 
 
 axios.defaults.withCredentials = true
