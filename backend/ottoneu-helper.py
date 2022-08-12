@@ -1,3 +1,5 @@
+import json
+from uuid import RESERVED_FUTURE
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -84,15 +86,17 @@ def team():
     
     teamLink = driver.find_element(By.XPATH, "/html/body/main/div[2]/table/tbody/tr/td[1]/a[1]")
     teamLink.click()
-
+    teamName = driver.find_element(By.CLASS_NAME, "teamName").text
     teamTbl = driver.find_element(By.XPATH, "/html/body/main/div[3]/div/table").get_attribute('outerHTML')
 
     df  = pd.read_html(teamTbl)[0]
     print(df)
 
     resp = make_response("Hello")
-    resp.set_data(df.to_json(orient='records'))
-
+    data = {}
+    data["team"] = df.to_json(orient='records')
+    data["teamName"] = teamName
+    resp.set_data(json.dumps(data))
     driver.close()
     return resp
 

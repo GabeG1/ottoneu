@@ -1,0 +1,15 @@
+/*
+.team-table {
+  width: 30vh;
+  height: min-content;
+  display: flex;
+  border: 1px solid black;
+}
+*/
+
+.team-table-container {
+  position: relative;
+  margin-top: 10vh;
+  width: 60%;
+  overflow: auto;
+}

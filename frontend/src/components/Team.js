@@ -1,14 +1,16 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import Table from 'react-bootstrap/Table';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useCookies } from 'react-cookie';
 import '../style/App.css';
 import '../style/Team.css';
+import { Paper } from '@mui/material';
 
 
 function Team() {
 
     const [teamData, setTeamData] = useState([]);
+    const [teamName, setTeamName] = useState();
     const [cookies, setCookie] = useCookies(["ottoneu"]);
 
     useEffect(() => {
@@ -24,8 +26,8 @@ function Team() {
                 headers: {
                 }
             });
-            console.log(data.data);
-            setTeamData(data.data);
+            setTeamData(JSON.parse(data.data['team']));
+            setTeamName(data.data['teamName'])
         }
 
         fetchTeam().catch(console.error);
@@ -35,34 +37,39 @@ function Team() {
     return (
         <div className="App">
 
-            <TableContainer component={Paper}>
-                <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                    <TableHead>
-                        <TableRow>
+            <Paper className='team-table-container' elevation={12}>
+                <header className='team-header'>
+                    Welcome {teamName}!
+                </header>
+                <Table striped responsive
+                    aria-label="simple table"
+                    className="team-table"
+                >
+                    <thead>
+                        <tr>
                             {teamData && teamData[0] && Object.keys(teamData[0]).map((column) => (
-                                <TableCell key={column}>{column}</TableCell>
+                                <th key={column}>{column}</th>
                             ))}
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
+                        </tr>
+                    </thead>
+                    <tbody>
                         {teamData && teamData.map((row) => (
-                            <TableRow
+                            <tr
                                 key={row.name}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
-                                <TableCell component="th" scope="row">
+                                <td component="td">
                                     {row.Player}
-                                </TableCell>
-                                <TableCell >{row.POS}</TableCell>
-                                <TableCell >{row.Salary}</TableCell>
-                                <TableCell >{row.Bye}</TableCell>
-                                <TableCell >{row['2021 Pts']}</TableCell>
-                               
-                            </TableRow>
+                                </td>
+                                <td >{row.POS}</td>
+                                <td >{row.Salary}</td>
+                                <td >{row.Bye}</td>
+                                <td >{row['2021 Pts']}</td>
+                            </tr>
                         ))}
-                    </TableBody>
+                    </tbody>
                 </Table>
-            </TableContainer>
+            </Paper>
 
         </div>
     )
